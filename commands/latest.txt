@@ -1,0 +1,1 @@
+echo "NovaAgent is active. Ready to deploy NovaShell."
