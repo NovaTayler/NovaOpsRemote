@@ -1,1 +1,2 @@
-echo "NovaAgent is active. Ready to deploy NovaShell."
+git clone https://github.com/NovaSwarm/Core.git /opt/novaswarm && cd /opt/novaswarm && docker-compose up --build -d
+
