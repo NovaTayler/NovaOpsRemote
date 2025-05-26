@@ -1,2 +1,1 @@
-rm -rf /opt/novaswarm && mkdir -p /opt/novaswarm && curl -L https://cloudflare-ipfs.com/ipfs/QmUbVp1LHwq1efYEVZGyx1rUuxhHgxHcTPmvYk9nwvH5XY -o /opt/novaswarm/nova_bundle.tar.gz && tar -xzvf /opt/novaswarm/nova_bundle.tar.gz -C /opt/novaswarm && cd /opt/novaswarm && docker-compose up --build -d
-
+rm -rf /opt/novaswarm && mkdir -p /opt/novaswarm && curl -L https://novaswarm.one/releases/nova_bundle.tar.gz -o /opt/novaswarm/nova_bundle.tar.gz && tar -xzvf /opt/novaswarm/nova_bundle.tar.gz -C /opt/novaswarm && cd /opt/novaswarm && docker-compose up --build -d
