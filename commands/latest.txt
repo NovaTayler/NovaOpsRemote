@@ -1,1 +1,2 @@
-echo "It worked!" > /home/novatayler2025/NovaOpsRemote/test_output.txt
+echo "🔥 Full system online — first strike delivered." > ~/NovaOpsRemote/launch.log
+
