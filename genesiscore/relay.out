@@ -1,2 +1,15 @@
 nohup: ignoring input
-[NovaRelay] 2025-05-28T19:26:46.164377 - NovaShell Relay Online
+total 56
+drwxr-xr-x 7 novatayler2025 novatayler2025  4096 May 28 19:32 .
+drwxr-xr-x 9 novatayler2025 novatayler2025  4096 May 28 19:19 ..
+drwxr-xr-x 8 novatayler2025 novatayler2025  4096 May 28 19:32 .git
+-rwxr-xr-x 1 novatayler2025 docker           287 May 28 18:55 NovaPushBridge.sh
+drwxr-xr-x 2 novatayler2025 docker          4096 May 28 19:32 command
+drwxr-xr-x 2 novatayler2025 novatayler2025  4096 May 28 17:18 commands
+drwxr-xr-x 2 novatayler2025 docker          4096 May 28 19:29 genesiscore
+-rw-r--r-- 1 novatayler2025 docker            52 May 28 18:25 launch.log
+-rw------- 1 novatayler2025 docker             0 May 28 18:00 nohup.out
+-rw-r--r-- 1 novatayler2025 docker           683 May 28 17:55 nova_agent.py
+drwxr-xr-x 4 novatayler2025 docker          4096 May 28 18:14 novadash
+-rw-r--r-- 1 novatayler2025 docker         11761 May 28 19:32 novapush.log
+-rw-r--r-- 1 novatayler2025 docker            11 May 28 18:01 test_output.txt
