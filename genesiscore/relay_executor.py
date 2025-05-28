@@ -27,6 +27,7 @@ def read_and_execute():
             log(f"Error:\n{e.output.decode()}")
         except Exception as ex:
             log(f"Exception: {str(ex)}")
+        open(COMMAND_FILE, "w").close()
 
 while True:
     read_and_execute()
