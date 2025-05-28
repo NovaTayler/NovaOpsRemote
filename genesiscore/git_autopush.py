@@ -13,3 +13,10 @@ def git_push():
 
 if __name__ == "__main__":
     git_push()
+from datetime import datetime
+
+# ... your git logic ...
+
+timestamp = datetime.utcnow().isoformat()
+with open("/home/novatayler2025/NovaOpsRemote/genesiscore/autopush.log", "a") as log:
+    log.write(f"[AutoPush] Commit: {timestamp}\n")
