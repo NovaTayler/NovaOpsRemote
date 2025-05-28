@@ -1849,3 +1849,21 @@ output, run
 $ git reset --hard
 to recover.
 ==== Wed May 28 20:56:01 UTC 2025 ====
+From github.com:NovaTayler/NovaOpsRemote
+ * branch            main       -> FETCH_HEAD
+warning: fetch updated the current branch head.
+fast-forwarding your working tree from
+commit 6efd63eccb3074c442d1130f1b3680e50a6cd52a.
+error: Your local changes to the following files would be overwritten by merge:
+	genesiscore/autopush.log
+	genesiscore/telemetry.log
+	novapush.log
+Please commit your changes or stash them before you merge.
+Aborting
+fatal: Cannot fast-forward your working tree.
+After making sure that you saved anything precious from
+$ git diff 6efd63eccb3074c442d1130f1b3680e50a6cd52a
+output, run
+$ git reset --hard
+to recover.
+==== Wed May 28 20:57:01 UTC 2025 ====
