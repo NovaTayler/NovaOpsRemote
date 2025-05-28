@@ -1,2 +1,0 @@
-echo "🔥 Full system online — first strike delivered." > ~/NovaOpsRemote/launch.log
-

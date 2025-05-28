@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NovaCommand Dashboard</title>
+</head>
+<body style="font-family: sans-serif; text-align: center; padding: 50px;">
+    <h1>🔥 NovaCommand Dashboard</h1>
+    <form method="post" action="/send">
+        <textarea name="command" rows="5" cols="60" placeholder="Enter your bash command here..."></textarea><br><br>
+        <input type="submit" value="Send Command">
+    </form>
+    {% if message %}
+        <p style="color: green; font-weight: bold;">{{ message }}</p>
+    {% endif %}
+</body>
+</html>
