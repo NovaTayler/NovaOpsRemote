@@ -3,8 +3,8 @@ import time
 import subprocess
 from datetime import datetime
 
-COMMAND_FILE = "/mnt/data/NovaOpsRemote/command/latest.txt"
-LOG_FILE = "/home/novatayler2025/NovaOpsRemote/genesiscore/relay_exec.log"
+COMMAND_FILE = os.path.expanduser("~/NovaOpsRemote/command/latest.txt")
+LOG_FILE = os.path.expanduser("~/NovaOpsRemote/genesiscore/relay_exec.log")
 
 def log(msg):
     with open(LOG_FILE, "a") as f:
