@@ -330,8 +330,7 @@ Traceback (most recent call last):
   File "/home/novatayler2025/NovaOpsRemote/novadash-env/lib/python3.11/site-packages/jinja2/loaders.py", line 209, in get_source
     raise TemplateNotFound(
 jinja2.exceptions.TemplateNotFound: 'index.html' not found in search path: 'templates'
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [415558]
+INFO:     206.75.78.66:54114 - "GET /docs HTTP/1.1" 200 OK
+INFO:     206.75.78.66:54114 - "GET /openapi.json HTTP/1.1" 200 OK
+d server process [415558]
 INFO:     Stopping reloader process [415556]
