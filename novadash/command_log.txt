@@ -1,0 +1,3 @@
+[2025-05-29T17:30:02.405301] CMD: pkill -f "uvicorn" nohup uvicorn main:app --host 0.0.0.0 --port 8000 --reload --app-dir novadash > output.log 2>&1 &
+OUT: 
+
