@@ -332,5 +332,16 @@ Traceback (most recent call last):
 jinja2.exceptions.TemplateNotFound: 'index.html' not found in search path: 'templates'
 INFO:     206.75.78.66:54114 - "GET /docs HTTP/1.1" 200 OK
 INFO:     206.75.78.66:54114 - "GET /openapi.json HTTP/1.1" 200 OK
-d server process [415558]
-INFO:     Stopping reloader process [415556]
+WARNING:  WatchFiles detected changes in 'novadash/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [415638]
+INFO:     Started server process [417471]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [417471]
+INFO:     Stopping reloader process [415636]

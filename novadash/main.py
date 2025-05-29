@@ -1,33 +1,23 @@
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-import subprocess
-import json
+from fastapi.staticfiles import StaticFiles
+import os
 
 app = FastAPI()
-templates = Jinja2Templates(directory="templates")
 
-with open("config.json", "r") as f:
-    config = json.load(f)
+# Mount the templates directory
+templates = Jinja2Templates(directory="novadash/templates")
+
+# Serve static files if needed (optional)
+if os.path.exists("novadash/static"):
+    app.mount("/static", StaticFiles(directory="novadash/static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("index.html", {"request": request, "message": "Welcome to NovaShell 🔥"})
 
-@app.post("/send", response_class=HTMLResponse)
+@app.post("/send")
 async def send_command(request: Request, command: str = Form(...)):
-    try:
-        with open(config["command_file"], "w") as f:
-            f.write(command + "\n")
-        subprocess.run(["git", "add", config["command_file"]], cwd=config["repo_path"])
-        subprocess.run(["git", "commit", "-m", "Command from dashboard"], cwd=config["repo_path"])
-        subprocess.run(["git", "push", "origin", config["branch"]], cwd=config["repo_path"])
-        message = "✅ Command sent successfully!"
-    except Exception as e:
-        message = f"❌ Error: {e}"
-    return templates.TemplateResponse("index.html", {"request": request, "message": message})
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("novadash.main:app", host="0.0.0.0", port=8000, reload=True)
-
+    os.system(command)  # Optional: log/validate commands instead
+    return templates.TemplateResponse("index.html", {"request": request, "message": f"Executed: {command}"})
