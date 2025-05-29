@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NovaShell Interface</title>
+</head>
+<body>
+  <h1>{{ message }}</h1>
+  <form method="post" action="/send">
+    <input type="text" name="command" placeholder="Enter command" required>
+    <button type="submit">Send Command</button>
+  </form>
+</body>
+</html>
