@@ -1,1 +1,11 @@
 nohup: ignoring input
+OSError: [Errno 28] No space left on device
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/novatayler2025/NovaOpsRemote/genesiscore/sensor_ping.py", line 11, in <module>
+    ping_loop()
+  File "/home/novatayler2025/NovaOpsRemote/genesiscore/sensor_ping.py", line 6, in ping_loop
+    with open("/home/novatayler2025/NovaOpsRemote/genesiscore/telemetry.log", "a") as log:
+OSError: [Errno 28] No space left on device
