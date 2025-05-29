@@ -22882,3 +22882,67 @@ output, run
 $ git reset --hard
 to recover.
 ==== Thu May 29 16:20:01 UTC 2025 ====
+From github.com:NovaTayler/NovaOpsRemote
+ * branch            main       -> FETCH_HEAD
+warning: fetch updated the current branch head.
+fast-forwarding your working tree from
+commit 4aa6fe66497819f6fc87e609f0e2ab07397aa5c7.
+error: Your local changes to the following files would be overwritten by merge:
+	genesiscore/autopush.log
+	genesiscore/telemetry.log
+	novadash/main.py
+	novapush.log
+Please commit your changes or stash them before you merge.
+error: The following untracked working tree files would be overwritten by merge:
+	novadash-env/lib/python3.11/site-packages/click/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/click/__pycache__/_compat.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/click/__pycache__/core.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/click/__pycache__/decorators.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/click/__pycache__/exceptions.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/click/__pycache__/formatting.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/click/__pycache__/globals.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/click/__pycache__/parser.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/click/__pycache__/termui.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/click/__pycache__/types.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/click/__pycache__/utils.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/httptools/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/httptools/__pycache__/_version.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/httptools/parser/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/httptools/parser/__pycache__/errors.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/__pycache__/_subprocess.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/__pycache__/_types.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/__pycache__/config.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/__pycache__/importer.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/__pycache__/logging.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/__pycache__/main.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/__pycache__/server.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/lifespan/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/lifespan/__pycache__/on.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/loops/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/loops/__pycache__/auto.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/loops/__pycache__/uvloop.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/middleware/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/middleware/__pycache__/asgi2.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/middleware/__pycache__/message_logger.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/middleware/__pycache__/proxy_headers.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/middleware/__pycache__/wsgi.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/protocols/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/protocols/__pycache__/utils.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/protocols/http/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/protocols/http/__pycache__/auto.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/protocols/http/__pycache__/flow_control.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/protocols/http/__pycache__/httptools_impl.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/protocols/websockets/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/protocols/websockets/__pycache__/auto.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/protocols/websockets/__pycache__/websockets_impl.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/uvicorn/supervisors/__pycache__/__init__.cpython-311.pyc
+	novad
+Aborting
+fatal: Cannot fast-forward your working tree.
+After making sure that you saved anything precious from
+$ git diff 4aa6fe66497819f6fc87e609f0e2ab07397aa5c7
+output, run
+$ git reset --hard
+to recover.
+==== Thu May 29 16:21:01 UTC 2025 ====
