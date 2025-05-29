@@ -1,11 +1,11 @@
 nohup: ignoring input
 INFO:     Will watch for changes in these directories: ['/home/novatayler2025/NovaOpsRemote']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [415556] using WatchFiles
-INFO:     Started server process [415558]
+INFO:     Started reloader process [415636] using WatchFiles
+INFO:     Started server process [415638]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     206.75.78.66:54013 - "GET / HTTP/1.1" 500 Internal Server Error
+INFO:     206.75.78.66:54033 - "GET / HTTP/1.1" 500 Internal Server Error
 ERROR:    Exception in ASGI application
 Traceback (most recent call last):
   File "/home/novatayler2025/NovaOpsRemote/novadash-env/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
@@ -70,7 +70,7 @@ Traceback (most recent call last):
   File "/home/novatayler2025/NovaOpsRemote/novadash-env/lib/python3.11/site-packages/jinja2/loaders.py", line 209, in get_source
     raise TemplateNotFound(
 jinja2.exceptions.TemplateNotFound: 'index.html' not found in search path: 'templates'
-INFO:     206.75.78.66:54014 - "GET / HTTP/1.1" 500 Internal Server Error
+INFO:     206.75.78.66:54032 - "GET / HTTP/1.1" 500 Internal Server Error
 ERROR:    Exception in ASGI application
 Traceback (most recent call last):
   File "/home/novatayler2025/NovaOpsRemote/novadash-env/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
@@ -135,7 +135,7 @@ Traceback (most recent call last):
   File "/home/novatayler2025/NovaOpsRemote/novadash-env/lib/python3.11/site-packages/jinja2/loaders.py", line 209, in get_source
     raise TemplateNotFound(
 jinja2.exceptions.TemplateNotFound: 'index.html' not found in search path: 'templates'
-INFO:     206.75.78.66:54015 - "GET / HTTP/1.1" 500 Internal Server Error
+INFO:     206.75.78.66:54036 - "GET / HTTP/1.1" 500 Internal Server Error
 ERROR:    Exception in ASGI application
 Traceback (most recent call last):
   File "/home/novatayler2025/NovaOpsRemote/novadash-env/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
@@ -200,7 +200,7 @@ Traceback (most recent call last):
   File "/home/novatayler2025/NovaOpsRemote/novadash-env/lib/python3.11/site-packages/jinja2/loaders.py", line 209, in get_source
     raise TemplateNotFound(
 jinja2.exceptions.TemplateNotFound: 'index.html' not found in search path: 'templates'
-INFO:     206.75.78.66:54016 - "GET / HTTP/1.1" 500 Internal Server Error
+INFO:     206.75.78.66:54037 - "GET / HTTP/1.1" 500 Internal Server Error
 ERROR:    Exception in ASGI application
 Traceback (most recent call last):
   File "/home/novatayler2025/NovaOpsRemote/novadash-env/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
@@ -265,7 +265,7 @@ Traceback (most recent call last):
   File "/home/novatayler2025/NovaOpsRemote/novadash-env/lib/python3.11/site-packages/jinja2/loaders.py", line 209, in get_source
     raise TemplateNotFound(
 jinja2.exceptions.TemplateNotFound: 'index.html' not found in search path: 'templates'
-INFO:     206.75.78.66:54017 - "GET / HTTP/1.1" 500 Internal Server Error
+INFO:     206.75.78.66:54038 - "GET / HTTP/1.1" 500 Internal Server Error
 ERROR:    Exception in ASGI application
 Traceback (most recent call last):
   File "/home/novatayler2025/NovaOpsRemote/novadash-env/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
@@ -330,3 +330,8 @@ Traceback (most recent call last):
   File "/home/novatayler2025/NovaOpsRemote/novadash-env/lib/python3.11/site-packages/jinja2/loaders.py", line 209, in get_source
     raise TemplateNotFound(
 jinja2.exceptions.TemplateNotFound: 'index.html' not found in search path: 'templates'
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [415558]
+INFO:     Stopping reloader process [415556]
