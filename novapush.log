@@ -22748,3 +22748,62 @@ output, run
 $ git reset --hard
 to recover.
 ==== Thu May 29 16:15:01 UTC 2025 ====
+From github.com:NovaTayler/NovaOpsRemote
+ * branch            main       -> FETCH_HEAD
+warning: fetch updated the current branch head.
+fast-forwarding your working tree from
+commit 76143d7b3741c09ab2822bba7a03b8b9cc553608.
+error: Your local changes to the following files would be overwritten by merge:
+	genesiscore/autopush.log
+	genesiscore/telemetry.log
+	novapush.log
+Please commit your changes or stash them before you merge.
+error: The following untracked working tree files would be overwritten by merge:
+	novadash-env/lib/python3.11/site-packages/pip/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/__pycache__/build_env.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/__pycache__/cache.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/__pycache__/configuration.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/__pycache__/exceptions.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/__pycache__/pyproject.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/__pycache__/self_outdated_check.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/__pycache__/wheel_builder.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/cli/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/cli/__pycache__/autocompletion.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/cli/__pycache__/base_command.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/cli/__pycache__/cmdoptions.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/cli/__pycache__/command_context.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/cli/__pycache__/index_command.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/cli/__pycache__/main.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/cli/__pycache__/main_parser.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/cli/__pycache__/parser.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/cli/__pycache__/progress_bars.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/cli/__pycache__/req_command.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/cli/__pycache__/spinners.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/cli/__pycache__/status_codes.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/commands/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/commands/__pycache__/install.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/distributions/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/distributions/__pycache__/base.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/distributions/__pycache__/installed.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/distributions/__pycache__/sdist.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/distributions/__pycache__/wheel.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/index/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/index/__pycache__/collector.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/index/__pycache__/package_finder.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/index/__pycache__/sources.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/locations/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/locations/__pycache__/_sysconfig.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/locations/__pycache__/base.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/metadata/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/metadata/__pycache__/_json.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/metadata/__pycache__/base.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/pip/_internal/metadata/importlib/__pycache__/__init_
+Aborting
+fatal: Cannot fast-forward your working tree.
+After making sure that you saved anything precious from
+$ git diff 76143d7b3741c09ab2822bba7a03b8b9cc553608
+output, run
+$ git reset --hard
+to recover.
+==== Thu May 29 16:16:01 UTC 2025 ====
