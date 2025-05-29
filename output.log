@@ -11,3 +11,8 @@ INFO:     206.75.78.66:54351 - "POST /send HTTP/1.1" 200 OK
 INFO:     206.75.78.66:54356 - "POST /send HTTP/1.1" 200 OK
 INFO:     206.75.78.66:54356 - "POST /send HTTP/1.1" 200 OK
 INFO:     206.75.78.66:54604 - "POST /send HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [421170]
+INFO:     Stopping reloader process [421168]
