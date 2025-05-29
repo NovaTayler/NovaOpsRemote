@@ -22493,3 +22493,46 @@ output, run
 $ git reset --hard
 to recover.
 ==== Thu May 29 16:03:01 UTC 2025 ====
+From github.com:NovaTayler/NovaOpsRemote
+ * branch            main       -> FETCH_HEAD
+warning: fetch updated the current branch head.
+fast-forwarding your working tree from
+commit 5381574e9377ad86980abec506833914090bf924.
+error: Your local changes to the following files would be overwritten by merge:
+	genesiscore/autopush.log
+	genesiscore/telemetry.log
+	novapush.log
+Please commit your changes or stash them before you merge.
+error: The following untracked working tree files would be overwritten by merge:
+	novadash-env/lib/python3.11/site-packages/multipart/__init__.py
+	novadash-env/lib/python3.11/site-packages/multipart/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/multipart/__pycache__/decoders.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/multipart/__pycache__/exceptions.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/multipart/__pycache__/multipart.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/multipart/decoders.py
+	novadash-env/lib/python3.11/site-packages/multipart/exceptions.py
+	novadash-env/lib/python3.11/site-packages/multipart/multipart.py
+	novadash-env/lib/python3.11/site-packages/python_multipart-0.0.20.dist-info/INSTALLER
+	novadash-env/lib/python3.11/site-packages/python_multipart-0.0.20.dist-info/METADATA
+	novadash-env/lib/python3.11/site-packages/python_multipart-0.0.20.dist-info/RECORD
+	novadash-env/lib/python3.11/site-packages/python_multipart-0.0.20.dist-info/REQUESTED
+	novadash-env/lib/python3.11/site-packages/python_multipart-0.0.20.dist-info/WHEEL
+	novadash-env/lib/python3.11/site-packages/python_multipart-0.0.20.dist-info/licenses/LICENSE.txt
+	novadash-env/lib/python3.11/site-packages/python_multipart/__init__.py
+	novadash-env/lib/python3.11/site-packages/python_multipart/__pycache__/__init__.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/python_multipart/__pycache__/decoders.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/python_multipart/__pycache__/exceptions.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/python_multipart/__pycache__/multipart.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/python_multipart/decoders.py
+	novadash-env/lib/python3.11/site-packages/python_multipart/exceptions.py
+	novadash-env/lib/python3.11/site-packages/python_multipart/multipart.py
+	novadash-env/lib/python3.11/site-packages/python_multipart/py.typed
+Please move or remove them before you merge.
+Aborting
+fatal: Cannot fast-forward your working tree.
+After making sure that you saved anything precious from
+$ git diff 5381574e9377ad86980abec506833914090bf924
+output, run
+$ git reset --hard
+to recover.
+==== Thu May 29 16:04:01 UTC 2025 ====
