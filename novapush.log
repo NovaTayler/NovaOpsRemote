@@ -23810,3 +23810,28 @@ output, run
 $ git reset --hard
 to recover.
 ==== Thu May 29 17:08:01 UTC 2025 ====
+From github.com:NovaTayler/NovaOpsRemote
+ * branch            main       -> FETCH_HEAD
+warning: fetch updated the current branch head.
+fast-forwarding your working tree from
+commit dfc6dc2d13828283080d610a399e18b69020d53c.
+error: Your local changes to the following files would be overwritten by merge:
+	genesiscore/autopush.log
+	genesiscore/telemetry.log
+	novadash/__pycache__/main.cpython-311.pyc
+	novadash/main.py
+	novapush.log
+	output.log
+Please commit your changes or stash them before you merge.
+error: The following untracked working tree files would be overwritten by merge:
+	novadash-env/lib/python3.11/site-packages/fastapi/__pycache__/staticfiles.cpython-311.pyc
+	novadash-env/lib/python3.11/site-packages/starlette/__pycache__/staticfiles.cpython-311.pyc
+Please move or remove them before you merge.
+Aborting
+fatal: Cannot fast-forward your working tree.
+After making sure that you saved anything precious from
+$ git diff dfc6dc2d13828283080d610a399e18b69020d53c
+output, run
+$ git reset --hard
+to recover.
+==== Thu May 29 17:09:01 UTC 2025 ====
