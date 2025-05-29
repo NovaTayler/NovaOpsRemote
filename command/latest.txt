@@ -1,0 +1,1 @@
+echo "✅ Nova successfully pushed this command — $(date)" > ~/NovaOpsRemote/nova_auth_test.txt
