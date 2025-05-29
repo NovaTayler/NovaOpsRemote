@@ -1,3 +1,29 @@
 [2025-05-29T17:30:02.405301] CMD: pkill -f "uvicorn" nohup uvicorn main:app --host 0.0.0.0 --port 8000 --reload --app-dir novadash > output.log 2>&1 &
 OUT: 
 
+[2025-05-29T17:31:54.557863] CMD: ls -la whoami uptime
+OUT: ls: cannot access 'whoami': No such file or directory
+ls: cannot access 'uptime': No such file or directory
+
+[2025-05-29T17:32:00.181447] CMD: ls -la
+OUT: total 972
+drwxr-xr-x 8 novatayler2025 novatayler2025   4096 May 29 16:06 .
+drwxr-xr-x 9 novatayler2025 novatayler2025   4096 May 29 16:01 ..
+drwxr-xr-x 8 novatayler2025 novatayler2025   4096 May 29 17:31 .git
+-rwxr-xr-x 1 novatayler2025 docker            287 May 28 18:55 NovaPushBridge.sh
+drwxr-xr-x 2 novatayler2025 docker           4096 May 28 19:32 command
+drwxr-xr-x 2 novatayler2025 novatayler2025   4096 May 28 17:18 commands
+-rw-r--r-- 1 novatayler2025 novatayler2025     77 May 29 16:01 config.json
+-rw-r--r-- 1 novatayler2025 docker             60 May 28 20:41 fullsync_test.txt
+drwxr-xr-x 2 novatayler2025 docker           4096 May 28 19:47 genesiscore
+-rw-r--r-- 1 novatayler2025 docker             69 May 28 20:01 github_test.txt
+-rw-r--r-- 1 novatayler2025 docker             52 May 28 18:25 launch.log
+-rw------- 1 novatayler2025 docker           2416 May 29 16:01 nohup.out
+-rw-r--r-- 1 novatayler2025 docker            683 May 28 17:55 nova_agent.py
+-rw-r--r-- 1 novatayler2025 docker             75 May 29 15:46 nova_auth_test.txt
+drwxr-xr-x 4 novatayler2025 docker           4096 May 29 17:30 novadash
+drwxr-xr-x 5 novatayler2025 novatayler2025   4096 May 29 15:55 novadash-env
+-rw-r--r-- 1 novatayler2025 docker         915194 May 29 17:31 novapush.log
+-rw-r--r-- 1 novatayler2025 novatayler2025    489 May 29 17:31 output.log
+-rw-r--r-- 1 novatayler2025 docker             11 May 28 18:01 test_output.txt
+

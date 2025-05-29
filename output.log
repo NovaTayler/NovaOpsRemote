@@ -5,3 +5,6 @@ INFO:     Started reloader process [421168] using WatchFiles
 INFO:     Started server process [421170]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
+INFO:     206.75.78.66:54330 - "GET / HTTP/1.1" 200 OK
+INFO:     206.75.78.66:54352 - "POST /send HTTP/1.1" 200 OK
+INFO:     206.75.78.66:54351 - "POST /send HTTP/1.1" 200 OK
