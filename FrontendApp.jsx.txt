@@ -1,0 +1,339 @@
+// src/App.jsx
+import React, { useState, useEffect, useCallback, useContext, Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import axios from 'axios';
+import io from 'socket.io-client';
+import { Shield, Lock, Brain, Network, Blocks, Zap, Activity, Settings, Users, CheckCircle, Eye, EyeOff, RefreshCw, Cpu, HardDrive, Wifi, Server, Grid, Sun, Moon } from 'lucide-react';
+import './App.css';
+
+// Configuration
+const CONFIG = {
+  API_URL: process.env.REACT_APP_API_URL || 'http://localhost:8080',
+  WS_URL: process.env.REACT_APP_WS_URL || 'ws://localhost:8080',
+  REFRESH_INTERVAL: 2000,
+  THEME: { primary: '#6366f1', secondary: '#8b5cf6', success: '#10b981', warning: '#f59e0b', error: '#ef4444', dark: '#1f2937', darker: '#111827' }
+};
+
+// Authentication Context
+const AuthContext = React.createContext();
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('omnimesh_token') || '');
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (token) setUser({ id: 'user_001', username: 'admin', role: 'administrator' });
+    setLoading(false);
+  }, [token]);
+  const login = useCallback(async (credentials) => {
+    try {
+      setLoading(true);
+      const response = await axios.post(`${CONFIG.API_URL}/token`, { password: credentials.password });
+      setToken(response.data.access_token);
+      setUser({ id: 'user_001', username: credentials.username || 'admin', role: 'administrator' });
+      localStorage.setItem('omnimesh_token', response.data.access_token);
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.response?.data?.detail || 'Login failed' };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+  const logout = useCallback(() => {
+    setToken('');
+    setUser(null);
+    localStorage.removeItem('omnimesh_token');
+  }, []);
+  return <AuthContext.Provider value={{ user, token, loading, login, logout }}>{children}</AuthContext.Provider>;
+};
+
+// Axios Interceptor
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem('omnimesh_token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+// WebSocket Hook
+const useWebSocket = (onMessage) => {
+  const [connected, setConnected] = useState(false);
+  useEffect(() => {
+    const socket = io(CONFIG.WS_URL, { path: '/ws/updates' });
+    socket.on('connect', () => setConnected(true));
+    socket.on('metrics', onMessage);
+    socket.on('disconnect', () => setConnected(false));
+    return () => socket.disconnect();
+  }, [onMessage]);
+  return { connected };
+};
+
+// Lazy-loaded Components
+const SystemMetrics = lazy(() => import('./components/SystemMetrics'));
+const QuantumEncryption = lazy(() => import('./components/QuantumEncryption'));
+const AIOperations = lazy(() => import('./components/AIOperations'));
+const FederatedLearning = lazy(() => import('./components/FederatedLearning'));
+const SwarmIntelligence = lazy(() => import('./components/SwarmIntelligence'));
+const BlockchainOperations = lazy(() => import('./components/BlockchainOperations'));
+const TaskManagement = lazy(() => import('./components/TaskManagement'));
+
+// Login Component
+const Login = () => {
+  const { login } = useContext(AuthContext);
+  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    const result = await login(credentials);
+    if (!result.success) setError(result.error);
+    setLoading(false);
+  };
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center p-4">
+      <div className="max-w-md w-full">
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full mb-4">
+              <Shield className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-white">OmniMesh</h1>
+            <p className="text-white/70 mt-2">Advanced Multi-Modal AI Platform</p>
+          </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-white/90 text-sm font-medium mb-2" htmlFor="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                value={credentials.username}
+                onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
+                className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Enter your username"
+                required
+                autoFocus
+              />
+            </div>
+            <div>
+              <label className="block text-white/90 text-sm font-medium mb-2" htmlFor="password">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  value={credentials.password}
+                  onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
+                  className="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-12"
+                  placeholder="Enter your password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+            {error && (
+              <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-red-200 text-sm">
+                {error}
+              </div>
+            )}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 transition-all duration-200"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <RefreshCw className="w-4 h-4 animate-spin mr-2" />
+                  Authenticating...
+                </div>
+              ) : (
+                'Sign In'
+              )}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Dashboard Component
+const Dashboard = () => {
+  const { user, logout } = useContext(AuthContext);
+  const [metrics, setMetrics] = useState({});
+  const [activeSection, setActiveSection] = useState('overview');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
+  useWebSocket(setMetrics);
+  useEffect(() => {
+    document.documentElement.className = theme;
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+  const sections = [
+    { id: 'overview', label: 'Overview', icon: Grid },
+    { id: 'system', label: 'System Metrics', icon: Activity },
+    { id: 'quantum', label: 'Quantum Ops', icon: Lock },
+    { id: 'ai', label: 'AI Operations', icon: Brain },
+    { id: 'federated', label: 'Fed Learning', icon: Network },
+    { id: 'swarm', label: 'Swarm Intel', icon: Users },
+    { id: 'blockchain', label: 'Blockchain', icon: Blocks },
+    { id: 'tasks', label: 'Task Manager', icon: CheckCircle }
+  ];
+  return (
+    <div className="flex h-screen bg-gray-900">
+      <div className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-gray-800 border-r border-gray-700 transition-all duration-300`}>
+        <div className="p-4 border-b border-gray-700">
+          <div className="flex items-center justify-between">
+            <div className={`${sidebarOpen ? 'block' : 'hidden'}`}>
+              <h1 className="text-xl font-bold text-white">OmniMesh</h1>
+              <p className="text-sm text-gray-400">v2.1.0</p>
+            </div>
+            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-700" aria-label="Toggle sidebar">
+              <Grid className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+        <nav className="p-4 space-y-2">
+          {sections.map(section => (
+            <button
+              key={section.id}
+              onClick={() => setActiveSection(section.id)}
+              className={`w-full flex items-center px-3 py-2 rounded-lg transition-colors ${
+                activeSection === section.id ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-700'
+              }`}
+              aria-current={activeSection === section.id ? 'page' : undefined}
+            >
+              <section.icon className="w-5 h-5" />
+              {sidebarOpen && <span className="ml-3">{section.label}</span>}
+            </button>
+          ))}
+        </nav>
+        <div className="absolute bottom-4 left-4 right-4">
+          <div className={`${sidebarOpen ? 'block' : 'hidden'} bg-gray-700 rounded-lg p-3 mb-3`}>
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-indigo-600 rounded-full mr-3" />
+              <div className="flex-1">
+                <p className="text-white text-sm font-medium">{user?.username}</p>
+                <p className="text-gray-400 text-xs">{user?.role}</p>
+              </div>
+              <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="text-gray-400 hover:text-white" aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}>
+                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
+          <button
+            onClick={logout}
+            className="w-full flex items-center justify-center px-3 py-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+            aria-label="Logout"
+          >
+            <Settings className="w-5 h-5" />
+            {sidebarOpen && <span className="ml-3">Logout</span>}
+          </button>
+        </div>
+      </div>
+      <div className="flex-1 overflow-auto">
+        <div className="p-6">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-white">{sections.find(s => s.id === activeSection)?.label}</h2>
+            <p className="text-gray-400">
+              {activeSection === 'overview' && 'System overview and real-time monitoring'}
+              {activeSection === 'system' && 'Hardware and system performance metrics'}
+              {activeSection === 'quantum' && 'Quantum encryption and cryptographic operations'}
+              {activeSection === 'ai' && 'Artificial intelligence and machine learning operations'}
+              {activeSection === 'federated' && 'Federated learning network management'}
+              {activeSection === 'swarm' && 'Swarm intelligence optimization algorithms'}
+              {activeSection === 'blockchain' && 'Blockchain operations and smart contracts'}
+              {activeSection === 'tasks' && 'Distributed task management and scheduling'}
+            </p>
+          </div>
+          <Suspense fallback={<div className="text-white">Loading...</div>}>
+            {activeSection === 'overview' && <OverviewSection metrics={metrics} />}
+            {activeSection === 'system' && <SystemMetrics metrics={metrics} />}
+            {activeSection === 'quantum' && <QuantumEncryption />}
+            {activeSection === 'ai' && <AIOperations />}
+            {activeSection === 'federated' && <FederatedLearning />}
+            {activeSection === 'swarm' && <SwarmIntelligence />}
+            {activeSection === 'blockchain' && <BlockchainOperations />}
+            {activeSection === 'tasks' && <TaskManagement />}
+          </Suspense>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Overview Section
+const OverviewSection = ({ metrics }) => {
+  const stats = [
+    { label: 'Active Nodes', value: metrics?.active_connections || 0, icon: Server, color: 'text-blue-400' },
+    { label: 'CPU Usage', value: `${Math.round(metrics?.cpu_percent || 0)}%`, icon: Cpu, color: 'text-green-400' },
+    { label: 'Memory Usage', value: `${Math.round(metrics?.memory_percent || 0)}%`, icon: HardDrive, color: 'text-yellow-400' },
+    { label: 'Network I/O', value: `${Math.round(metrics?.network_io?.sent || 0)} MB/s`, icon: Wifi, color: 'text-purple-400' }
+  ];
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, index) => (
+          <div key={index} className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm">{stat.label}</p>
+                <p className="text-2xl font-bold text-white mt-1">{stat.value}</p>
+              </div>
+              <stat.icon className={`w-8 h-8 ${stat.color}`} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <SystemMetrics metrics={metrics} />
+        <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+          <h3 className="text-lg font-bold text-white mb-4">System Status</h3>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400">Quantum Engine</span>
+              <div className="flex items-center text-green-400">
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Online
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400">AI Models</span>
+              <div className="flex items-center text-green-400">
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Loaded
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400">Blockchain Sync</span>
+              <div className="flex items-center text-green-400">
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Synced
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// App Component
+const App = () => (
+  <Router>
+    <AuthProvider>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Dashboard />} />
+      </Routes>
+    </AuthProvider>
+  </Router>
+);
+
+export default App;

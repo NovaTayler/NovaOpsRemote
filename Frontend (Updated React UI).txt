@@ -1,0 +1,155 @@
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./App.css";
+import SystemMetrics from "./components/SystemMetrics";
+import QuantumEncryption from "./components/QuantumEncryption";
+import AIOperations from "./components/AIOperations";
+import FederatedLearning from "./components/FederatedLearning";
+import SwarmIntelligence from "./components/SwarmIntelligence";
+import BlockchainOperations from "./components/BlockchainOperations";
+import TaskManagement from "./components/TaskManagement";
+import ECommerceAccounts from "./components/ECommerceAccounts";
+import ECommerceListings from "./components/ECommerceListings";
+import ECommerceOrders from "./components/ECommerceOrders";
+import BotManagement from "./components/BotManagement";
+
+const App = () => {
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
+
+  useEffect(() => {
+    document.body.className = theme;
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  return (
+    <Router>
+      <div className={`app ${theme}`}>
+        {!token ? (
+          <Login setToken={setToken} theme={theme} />
+        ) : (
+          <div className="flex">
+            <div className={`sidebar ${isSidebarOpen ? "open" : "closed"}`}>
+              <button className="toggle-sidebar" onClick={toggleSidebar}>
+                {isSidebarOpen ? "◄" : "►"}
+              </button>
+              {isSidebarOpen && (
+                <div className="sidebar-content">
+                  <h2>OmniMesh + NovaShell</h2>
+                  <nav>
+                    <Link to="/">System Metrics</Link>
+                    <Link to="/quantum-encryption">Quantum Encryption</Link>
+                    <Link to="/ai-operations">AI Operations</Link>
+                    <Link to="/federated-learning">Federated Learning</Link>
+                    <Link to="/swarm-intelligence">Swarm Intelligence</Link>
+                    <Link to="/blockchain-operations">Blockchain Operations</Link>
+                    <Link to="/task-management">Task Management</Link>
+                    <Link to="/ecommerce-accounts">E-Commerce Accounts</Link>
+                    <Link to="/ecommerce-listings">E-Commerce Listings</Link>
+                    <Link to="/ecommerce-orders">E-Commerce Orders</Link>
+                    <Link to="/bot-management">Bot Management</Link>
+                  </nav>
+                  <div className="sidebar-footer">
+                    <button onClick={toggleTheme}>
+                      Toggle {theme === "dark" ? "Light" : "Dark"} Mode
+                    </button>
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem("token");
+                        setToken("");
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className={`main-content ${isSidebarOpen ? "shifted" : ""}`}>
+              <Routes>
+                <Route path="/" element={<SystemMetrics token={token} />} />
+                <Route path="/quantum-encryption" element={<QuantumEncryption token={token} />} />
+                <Route path="/ai-operations" element={<AIOperations token={token} />} />
+                <Route path="/federated-learning" element={<FederatedLearning token={token} />} />
+                <Route path="/swarm-intelligence" element={<SwarmIntelligence token={token} />} />
+                <Route path="/blockchain-operations" element={<BlockchainOperations token={token} />} />
+                <Route path="/task-management" element={<TaskManagement token={token} />} />
+                <Route path="/ecommerce-accounts" element={<ECommerceAccounts token={token} />} />
+                <Route path="/ecommerce-listings" element={<ECommerceListings token={token} />} />
+                <Route path="/ecommerce-orders" element={<ECommerceOrders token={token} />} />
+                <Route path="/bot-management" element={<BotManagement token={token} />} />
+              </Routes>
+            </div>
+          </div>
+        )}
+        <ToastContainer theme={theme} />
+      </div>
+    </Router>
+  );
+};
+
+const Login = ({ setToken, theme }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://192.168.1.100:8080/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem("token", data.access_token);
+        setToken(data.access_token);
+        navigate("/");
+        toast.success("Logged in successfully!");
+      } else {
+        toast.error(data.detail || "Login failed");
+      }
+    } catch (error) {
+      toast.error("Login failed: " + error.message);
+    }
+  };
+
+  return (
+    <div className="login-container">
+      <div className="login-box">
+        <h2>Login to OmniMesh + NovaShell</h2>
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default App;

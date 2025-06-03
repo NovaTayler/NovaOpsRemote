@@ -1,0 +1,93 @@
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+
+const ECommerceAccounts = ({ token }) => {
+  const [accounts, setAccounts] = useState([]);
+  const [platform, setPlatform] = useState("eBay");
+  const [index, setIndex] = useState(1);
+
+  useEffect(() => {
+    fetchAccounts();
+  }, []);
+
+  const fetchAccounts = async () => {
+    try {
+      const response = await fetch("http://192.168.1.100:8080/api/status", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      setAccounts(data.accounts || []);
+    } catch (error) {
+      toast.error("Failed to fetch accounts: " + error.message);
+    }
+  };
+
+  const createAccount = async () => {
+    try {
+      const response = await fetch("http://192.168.1.100:8080/api/ecommerce/create_account", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ platform, index }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast.success(`Account created: ${data.username}`);
+        fetchAccounts();
+      } else {
+        toast.error(data.detail || "Account creation failed");
+      }
+    } catch (error) {
+      toast.error("Account creation failed: " + error.message);
+    }
+  };
+
+  return (
+    <div className="container">
+      <h2>E-Commerce Accounts</h2>
+      <div className="form-section">
+        <h3>Create New Account</h3>
+        <select value={platform} onChange={(e) => setPlatform(e.target.value)}>
+          <option value="eBay">eBay</option>
+          <option value="Amazon">Amazon</option>
+          <option value="Walmart">Walmart</option>
+          <option value="Etsy">Etsy</option>
+          <option value="Shopify">Shopify</option>
+        </select>
+        <input
+          type="number"
+          value={index}
+          onChange={(e) => setIndex(parseInt(e.target.value))}
+          placeholder="Index"
+          min="1"
+        />
+        <button onClick={createAccount}>Create Account</button>
+      </div>
+      <div className="table-section">
+        <h3>Existing Accounts</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Platform</th>
+              <th>Email</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {accounts.map((account, idx) => (
+              <tr key={idx}>
+                <td>{account.platform}</td>
+                <td>{account.email}</td>
+                <td>{account.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default ECommerceAccounts;

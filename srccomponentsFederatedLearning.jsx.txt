@@ -1,0 +1,159 @@
+// src/components/FederatedLearning.jsx
+import React, { useState } from 'react';
+import axios from 'axios';
+import { Network, RefreshCw } from 'lucide-react';
+import { CONFIG } from '../App';
+
+const FederatedLearning = () => {
+  const [architecture, setArchitecture] = useState('');
+  const [participants, setParticipants] = useState('');
+  const [roundId, setRoundId] = useState('');
+  const [weights, setWeights] = useState('');
+  const [result, setResult] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const createRound = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      let parsedArchitecture, parsedParticipants;
+      try {
+        parsedArchitecture = JSON.parse(architecture);
+        parsedParticipants = JSON.parse(participants);
+      } catch (e) {
+        throw new Error('Invalid JSON data');
+      }
+      const response = await axios.post(`${CONFIG.API_URL}/api/federated/create`, {
+        model_architecture: parsedArchitecture,
+        participants: parsedParticipants
+      });
+      setResult(JSON.stringify(response.data, null, 2));
+    } catch (error) {
+      setError(error.response?.data?.detail || error.message || 'Operation failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const submitUpdate = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await axios.post(`${CONFIG.API_URL}/api/federated/update`, {
+        round_id: roundId,
+        model_weights: new TextEncoder().encode(weights)
+      });
+      setResult(JSON.stringify(response.data, null, 2));
+    } catch (error) {
+      setError(error.response?.data?.detail || error.message || 'Operation failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-bold text-white flex items-center">
+            <Network className="w-5 h-5 mr-2 text-green-400" />
+            Federated Learning
+          </h3>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-gray-400 text-sm mb-2" htmlFor="architecture">Model Architecture</label>
+              <textarea
+                id="architecture"
+                value={architecture}
+                onChange={(e) => setArchitecture(e.target.value)}
+                className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-green-500 focus:outline-none h-32 resize-none font-mono text-sm"
+                placeholder='Enter JSON (e.g., {"input_size": 100, "output_size": 10})'
+              />
+            </div>
+            <div>
+              <label className="block text-gray-400 text-sm mb-2" htmlFor="participants">Participants</label>
+              <textarea
+                id="participants"
+                value={participants}
+                onChange={(e) => setParticipants(e.target.value)}
+                className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-green-500 focus:outline-none h-32 resize-none font-mono text-sm"
+                placeholder='Enter JSON (e.g., ["node1", "node2"])'
+              />
+            </div>
+            <button
+              onClick={createRound}
+              disabled={loading || !architecture || !participants}
+              className="w-full bg-gradient-to-r from-green-600 to-teal-600 text-white py-3 px-4 rounded-lg hover:from-green-700 hover:to-teal-700 disabled:opacity-50 transition-all duration-200"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <RefreshCw className="w-4 h-4 animate-spin mr-2" />
+                  Creating...
+                </div>
+              ) : (
+                'Create Round'
+              )}
+            </button>
+            <div>
+              <label className="block text-gray-400 text-sm mb-2" htmlFor="roundId">Round ID</label>
+              <input
+                type="text"
+                id="roundId"
+                value={roundId}
+                onChange={(e) => setRoundId(e.target.value)}
+                className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white focus:border-green-500 focus:outline-none"
+                placeholder="Enter round ID"
+              />
+            </div>
+            <div>
+              <label className="block text-gray-400 text-sm mb-2" htmlFor="weights">Model Weights</label>
+              <textarea
+                id="weights"
+                value={weights}
+                onChange={(e) => setWeights(e.target.value)}
+                className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-green-500 focus:outline-none h-32 resize-none font-mono text-sm"
+                placeholder="Enter serialized weights"
+              />
+            </div>
+            <button
+              onClick={submitUpdate}
+              disabled={loading || !roundId || !weights}
+              className="w-full bg-gradient-to-r from-green-600 to-teal-600 text-white py-3 px-4 rounded-lg hover:from-green-700 hover:to-teal-700 disabled:opacity-50 transition-all duration-200"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <RefreshCw className="w-4 h-4 animate-spin mr-2" />
+                  Submitting...
+                </div>
+              ) : (
+                'Submit Update'
+              )}
+            </button>
+            {error && (
+              <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-red-200 text-sm">
+                {error}
+              </div>
+            )}
+          </div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-gray-400 text-sm mb-2" htmlFor="fedResult">Result</label>
+              <textarea
+                id="fedResult"
+                value={result}
+                readOnly
+                className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white h-32 resize-none font-mono text-sm"
+                placeholder="Result will appear here..."
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FederatedLearning;

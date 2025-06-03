@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# deploy.sh
+set -e
+
+echo "Starting OmniMesh + NovaShell deployment..."
+
+# Step 1: Clone or update the repository
+if [ -d "omnimesh" ]; then
+    cd omnimesh
+    git pull origin main
+else
+    git clone https://github.com/your-repo/omnimesh.git
+    cd omnimesh
+fi
+
+# Step 2: Build and start containers
+docker-compose down
+docker-compose up --build -d
+
+echo "Deployment complete! Access OmniMesh + NovaShell at http://192.168.1.100"

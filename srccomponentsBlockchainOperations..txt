@@ -1,0 +1,91 @@
+// src/components/BlockchainOperations.jsx
+import React, { useState } from 'react';
+import axios from 'axios';
+import { Blocks, RefreshCw } from 'lucide-react';
+import { CONFIG } from '../App';
+
+const BlockchainOperations = () => {
+  const [data, setData] = useState('');
+  const [result, setResult] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const submit = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      let parsedData;
+      try {
+        parsedData = JSON.parse(data);
+      } catch (e) {
+        throw new Error('Invalid JSON data');
+      }
+      const response = await axios.post(`${CONFIG.API_URL}/api/blockchain/submit`, { data: parsedData });
+      setResult(JSON.stringify(response.data, null, 2));
+    } catch (error) {
+      setError(error.response?.data?.detail || error.message || 'Operation failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-bold text-white flex items-center">
+            <Blocks className="w-5 h-5 mr-2 text-teal-400" />
+            Blockchain Submission
+          </h3>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-gray-400 text-sm mb-2" htmlFor="blockchainData">Data</label>
+              <textarea
+                id="blockchainData"
+                value={data}
+                onChange={(e) => setData(e.target.value)}
+                className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-teal-500 focus:outline-none h-32 resize-none font-mono text-sm"
+                placeholder='Enter JSON data (e.g., {"data": "value"})'
+              />
+            </div>
+            <button
+              onClick={submit}
+              disabled={loading || !data}
+              className="w-full bg-gradient-to-r from-teal-600 to-cyan-600 text-white py-3 px-4 rounded-lg hover:from-teal-700 hover:to-cyan-700 disabled:opacity-50 transition-all duration-200"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <RefreshCw className="w-4 h-4 animate-spin mr-2" />
+                  Submitting...
+                </div>
+              ) : (
+                'Submit'
+              )}
+            </button>
+            {error && (
+              <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-red-200 text-sm">
+                {error}
+              </div>
+            )}
+          </div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-gray-400 text-sm mb-2" htmlFor="blockchainResult">Result</label>
+              <textarea
+                id="blockchainResult"
+                value={result}
+                readOnly
+                className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white h-32 resize-none font-mono text-sm"
+                placeholder="Result will appear here..."
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default BlockchainOperations;

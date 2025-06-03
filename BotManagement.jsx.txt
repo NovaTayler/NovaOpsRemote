@@ -1,0 +1,142 @@
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+
+const BotManagement = ({ token }) => {
+  const [bots, setBots] = useState([]);
+  const [file, setFile] = useState(null);
+  const [botName, setBotName] = useState("");
+  const [logs, setLogs] = useState([]);
+  const [ws, setWs] = useState(null);
+
+  useEffect(() => {
+    fetchBots();
+    return () => {
+      if (ws) ws.close();
+    };
+  }, []);
+
+  const fetchBots = async () => {
+    try {
+      const response = await fetch("http://192.168.1.100:8080/api/bots/status", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      setBots(data.bots || []);
+    } catch (error) {
+      toast.error("Failed to fetch bots: " + error.message);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const uploadBot = async () => {
+    if (!file) {
+      toast.error("Please select a file to upload");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const response = await fetch("http://192.168.1.100:8080/api/bots/upload", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast.success(data.message);
+        fetchBots();
+        setBotName(data.message.split(" ")[2]); // Extract bot name from message
+      } else {
+        toast.error(data.detail || "Bot upload failed");
+      }
+    } catch (error) {
+      toast.error("Bot upload failed: " + error.message);
+    }
+  };
+
+  const deployBot = async () => {
+    if (!botName) {
+      toast.error("Please upload a bot or enter a bot name");
+      return;
+    }
+    try {
+      const response = await fetch(`http://192.168.1.100:8080/api/deploy/${botName}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast.success(data.message);
+        connectWebSocket();
+      } else {
+        toast.error(data.detail || "Bot deployment failed");
+      }
+    } catch (error) {
+      toast.error("Bot deployment failed: " + error.message);
+    }
+  };
+
+  const connectWebSocket = () => {
+    if (ws) ws.close();
+    const websocket = new WebSocket(`ws://192.168.1.100:8080/api/ws/bots/${botName}?token=${token}`);
+    websocket.onmessage = (event) => {
+      setLogs((prevLogs) => [...prevLogs, event.data].slice(-50)); // Keep last 50 logs
+    };
+    websocket.onerror = () => {
+      toast.error("WebSocket connection failed");
+    };
+    setWs(websocket);
+  };
+
+  return (
+    <div className="container">
+      <h2>Bot Management</h2>
+      <div className="form-section">
+        <h3>Upload and Deploy Bot</h3>
+        <input type="file" accept=".py" onChange={handleFileChange} />
+        <button onClick={uploadBot}>Upload Bot</button>
+        <input
+          type="text"
+          value={botName}
+          onChange={(e) => setBotName(e.target.value)}
+          placeholder="Bot Name"
+        />
+        <button onClick={deployBot}>Deploy Bot</button>
+      </div>
+      <div className="table-section">
+        <h3>Bot Status</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Execution Time</th>
+              <th>Errors</th>
+              <th>Last Run</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bots.map((bot, idx) => (
+              <tr key={idx}>
+                <td>{bot.name}</td>
+                <td>{bot.status}</td>
+                <td>{bot.execution_time}s</td>
+                <td>{bot.errors}</td>
+                <td>{bot.last_run}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="logs-section">
+        <h3>Bot Logs</h3>
+        <pre>{logs.join("\n")}</pre>
+      </div>
+    </div>
+  );
+};
+
+export default BotManagement;

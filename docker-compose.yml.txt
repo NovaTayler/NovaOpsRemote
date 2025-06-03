@@ -1,0 +1,99 @@
+
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: omnimesh
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: omnimesh
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - omnimesh-net
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - omnimesh-net
+
+  celery:
+    build:
+      context: ./backend
+    command: celery -A main worker --loglevel=info
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - DB_URL=postgresql://omnimesh:password@postgres:5432/omnimesh
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - .:/app
+    networks:
+      - omnimesh-net
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_URL=postgresql://omnimesh:password@postgres:5432/omnimesh
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - ADMIN_PASSWORD=secure_omnimesh_pass_2025
+      - FRONTEND_URL=http://192.168.1.100
+      - EMAIL_PROVIDER=imap.gmail.com
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+      - GROQ_KEY=${GROQ_KEY}
+    depends_on:
+      - postgres
+      - redis
+      - celery
+      - ollama
+    volumes:
+      - .:/app
+    networks:
+      - omnimesh-net
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "80:80"
+    environment:
+      - REACT_APP_API_URL=http://192.168.1.100:8080
+      - REACT_APP_WS_URL=ws://192.168.1.100:8080
+    depends_on:
+      - backend
+    networks:
+      - omnimesh-net
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - omnimesh-net
+
+volumes:
+  postgres_data:
+  redis_data:
+  ollama_data:
+
+networks:
+  omnimesh-net:
+    driver: bridge

@@ -1,0 +1,184 @@
+// src/components/AIOperations.jsx
+import React, { useState } from 'react';
+import axios from 'axios';
+import { Brain, RefreshCw } from 'lucide-react';
+import { CONFIG } from '../App';
+
+const AIOperations = () => {
+  const [operation, setOperation] = useState('generate');
+  const [prompt, setPrompt] = useState('');
+  const [text, setText] = useState('');
+  const [question, setQuestion] = useState('');
+  const [context, setContext] = useState('');
+  const [predictData, setPredictData] = useState('');
+  const [result, setResult] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const operations = [
+    { id: 'generate', label: 'Text Generation' },
+    { id: 'sentiment', label: 'Sentiment Analysis' },
+    { id: 'question', label: 'Question Answering' },
+    { id: 'summarize', label: 'Summarization' },
+    { id: 'ner', label: 'Named Entity Recognition' },
+    { id: 'predict', label: 'Time Series Prediction' }
+  ];
+
+  const executeOperation = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      let response;
+      if (operation === 'generate') {
+        response = await axios.post(`${CONFIG.API_URL}/api/ai/generate`, { prompt });
+      } else if (operation === 'sentiment') {
+        response = await axios.post(`${CONFIG.API_URL}/api/ai/sentiment`, { text });
+      } else if (operation === 'question') {
+        response = await axios.post(`${CONFIG.API_URL}/api/ai/question`, { question, context });
+      } else if (operation === 'summarize') {
+        response = await axios.post(`${CONFIG.API_URL}/api/ai/summarize`, { text });
+      } else if (operation === 'ner') {
+        response = await axios.post(`${CONFIG.API_URL}/api/ai/ner`, { text });
+      } else if (operation === 'predict') {
+        let parsedData;
+        try {
+          parsedData = JSON.parse(predictData);
+        } catch (e) {
+          throw new Error('Invalid JSON data');
+        }
+        response = await axios.post(`${CONFIG.API_URL}/api/ai/predict`, { data: parsedData });
+      }
+      setResult(JSON.stringify(response.data, null, 2));
+    } catch (error) {
+      setError(error.response?.data?.detail || error.message || 'Operation failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-bold text-white flex items-center">
+            <Brain className="w-5 h-5 mr-2 text-blue-400" />
+            AI Operations
+          </h3>
+          <select
+            value={operation}
+            onChange={(e) => setOperation(e.target.value)}
+            className="px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none"
+            aria-label="Select AI operation"
+          >
+            {operations.map(op => (
+              <option key={op.id} value={op.id}>{op.label}</option>
+            ))}
+          </select>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            {operation === 'generate' && (
+              <div>
+                <label className="block text-gray-400 text-sm mb-2" htmlFor="prompt">Prompt</label>
+                <textarea
+                  id="prompt"
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none h-32 resize-none"
+                  placeholder="Enter your prompt here..."
+                />
+              </div>
+            )}
+            {['sentiment', 'summarize', 'ner'].includes(operation) && (
+              <div>
+                <label className="block text-gray-400 text-sm mb-2" htmlFor="text">Text</label>
+                <textarea
+                  id="text"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none h-32 resize-none"
+                  placeholder="Enter text here..."
+                />
+              </div>
+            )}
+            {operation === 'question' && (
+              <>
+                <div>
+                  <label className="block text-gray-400 text-sm mb-2" htmlFor="question">Question</label>
+                  <input
+                    type="text"
+                    id="question"
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none"
+                    placeholder="Enter question..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 text-sm mb-2" htmlFor="context">Context</label>
+                  <textarea
+                    id="context"
+                    value={context}
+                    onChange={(e) => setContext(e.target.value)}
+                    className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none h-32 resize-none"
+                    placeholder="Enter context here..."
+                  />
+                </div>
+              </>
+            )}
+            {operation === 'predict' && (
+              <div>
+                <label className="block text-gray-400 text-sm mb-2" htmlFor="predictData">Data</label>
+                <textarea
+                  id="predictData"
+                  value={predictData}
+                  onChange={(e) => setPredictData(e.target.value)}
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none h-32 resize-none font-mono text-sm"
+                  placeholder='Enter data as [[float, ...], ...]'
+                />
+              </div>
+            )}
+            {error && (
+              <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-red-200 text-sm">
+                {error}
+              </div>
+            )}
+            <button
+              onClick={executeOperation}
+              disabled={loading || !(
+                (operation === 'generate' && prompt) ||
+                (['sentiment', 'summarize', 'ner'].includes(operation) && text) ||
+                (operation === 'question' && question && context) ||
+                (operation === 'predict' && predictData)
+              )}
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 transition-all duration-200"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <RefreshCw className="w-4 h-4 animate-spin mr-2" />
+                  Processing...
+                </div>
+              ) : (
+                'Execute'
+              )}
+            </button>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-gray-400 text-sm mb-2" htmlFor="aiResult">Result</label>
+              <textarea
+                id="aiResult"
+                value={result}
+                readOnly
+                className="w-full px-3 py-2 bg-gray-900 border border-gray-600 rounded-lg text-white h-32 resize-none font-mono text-sm"
+                placeholder="Result will appear here..."
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AIOperations;

@@ -1,0 +1,128 @@
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+
+const ECommerceOrders = ({ token }) => {
+  const [orders, setOrders] = useState([]);
+  const [order, setOrder] = useState({
+    order_id: "",
+    platform: "eBay",
+    sku: "",
+    buyer_name: "",
+    buyer_address: "",
+    supplier: "CJ Dropshipping",
+  });
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch("http://192.168.1.100:8080/api/status", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      setOrders(data.orders || []);
+    } catch (error) {
+      toast.error("Failed to fetch orders: " + error.message);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setOrder({ ...order, [e.target.name]: e.target.value });
+  };
+
+  const fulfillOrder = async () => {
+    try {
+      const response = await fetch("http://192.168.1.100:8080/api/ecommerce/fulfill_order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(order),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast.success("Order fulfilled successfully!");
+        fetchOrders();
+      } else {
+        toast.error(data.detail || "Order fulfillment failed");
+      }
+    } catch (error) {
+      toast.error("Order fulfillment failed: " + error.message);
+    }
+  };
+
+  return (
+    <div className="container">
+      <h2>E-Commerce Orders</h2>
+      <div className="form-section">
+        <h3>Fulfill Order</h3>
+        <input
+          type="text"
+          name="order_id"
+          value={order.order_id}
+          onChange={handleInputChange}
+          placeholder="Order ID"
+        />
+        <select name="platform" value={order.platform} onChange={handleInputChange}>
+          <option value="eBay">eBay</option>
+          <option value="Amazon">Amazon</option>
+          <option value="Walmart">Walmart</option>
+          <option value="Etsy">Etsy</option>
+          <option value="Shopify">Shopify</option>
+        </select>
+        <input
+          type="text"
+          name="sku"
+          value={order.sku}
+          onChange={handleInputChange}
+          placeholder="SKU"
+        />
+        <input
+          type="text"
+          name="buyer_name"
+          value={order.buyer_name}
+          onChange={handleInputChange}
+          placeholder="Buyer Name"
+        />
+        <input
+          type="text"
+          name="buyer_address"
+          value={order.buyer_address}
+          onChange={handleInputChange}
+          placeholder="Buyer Address"
+        />
+        <select name="supplier" value={order.supplier} onChange={handleInputChange}>
+          <option value="CJ Dropshipping">CJ Dropshipping</option>
+          <option value="AliExpress">AliExpress</option>
+        </select>
+        <button onClick={fulfillOrder}>Fulfill Order</button>
+      </div>
+      <div className="table-section">
+        <h3>Order Status</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Platform</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.map((order, idx) => (
+              <tr key={idx}>
+                <td>{order.order_id}</td>
+                <td>{order.platform}</td>
+                <td>{order.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default ECommerceOrders;

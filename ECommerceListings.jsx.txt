@@ -1,0 +1,144 @@
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+
+const ECommerceListings = ({ token }) => {
+  const [listings, setListings] = useState([]);
+  const [product, setProduct] = useState({
+    title: "",
+    sku: "",
+    cost: 0,
+    price: 0,
+    url: "",
+    quantity: 0,
+    supplier: "CJ Dropshipping",
+  });
+  const [platform, setPlatform] = useState("eBay");
+
+  useEffect(() => {
+    fetchListings();
+  }, []);
+
+  const fetchListings = async () => {
+    try {
+      const response = await fetch("http://192.168.1.100:8080/api/status", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      setListings(data.listings || []);
+    } catch (error) {
+      toast.error("Failed to fetch listings: " + error.message);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setProduct({ ...product, [e.target.name]: e.target.value });
+  };
+
+  const listProduct = async () => {
+    try {
+      const response = await fetch("http://192.168.1.100:8080/api/ecommerce/list_product", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ product, platform }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast.success("Product listed successfully!");
+        fetchListings();
+      } else {
+        toast.error(data.detail || "Product listing failed");
+      }
+    } catch (error) {
+      toast.error("Product listing failed: " + error.message);
+    }
+  };
+
+  return (
+    <div className="container">
+      <h2>E-Commerce Listings</h2>
+      <div className="form-section">
+        <h3>List New Product</h3>
+        <input
+          type="text"
+          name="title"
+          value={product.title}
+          onChange={handleInputChange}
+          placeholder="Title"
+        />
+        <input
+          type="text"
+          name="sku"
+          value={product.sku}
+          onChange={handleInputChange}
+          placeholder="SKU"
+        />
+        <input
+          type="number"
+          name="cost"
+          value={product.cost}
+          onChange={handleInputChange}
+          placeholder="Cost"
+        />
+        <input
+          type="number"
+          name="price"
+          value={product.price}
+          onChange={handleInputChange}
+          placeholder="Price"
+        />
+        <input
+          type="text"
+          name="url"
+          value={product.url}
+          onChange={handleInputChange}
+          placeholder="URL"
+        />
+        <input
+          type="number"
+          name="quantity"
+          value={product.quantity}
+          onChange={handleInputChange}
+          placeholder="Quantity"
+        />
+        <select name="supplier" value={product.supplier} onChange={handleInputChange}>
+          <option value="CJ Dropshipping">CJ Dropshipping</option>
+          <option value="AliExpress">AliExpress</option>
+        </select>
+        <select value={platform} onChange={(e) => setPlatform(e.target.value)}>
+          <option value="eBay">eBay</option>
+          <option value="Amazon">Amazon</option>
+          <option value="Walmart">Walmart</option>
+          <option value="Etsy">Etsy</option>
+          <option value="Shopify">Shopify</option>
+        </select>
+        <button onClick={listProduct}>List Product</button>
+      </div>
+      <div className="table-section">
+        <h3>Current Listings</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>SKU</th>
+              <th>Platform</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listings.map((listing, idx) => (
+              <tr key={idx}>
+                <td>{listing.sku}</td>
+                <td>{listing.platform}</td>
+                <td>{listing.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default ECommerceListings;

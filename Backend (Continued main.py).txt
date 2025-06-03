@@ -1,0 +1,103 @@
+conn.fetch("SELECT platform, email, status FROM accounts LIMIT 10")
+                listings = await conn.fetch("SELECT sku, platform, status FROM listings LIMIT 10")
+                orders = await conn.fetch("SELECT order_id, platform, status FROM orders LIMIT 10")
+                bots = await conn.fetch("SELECT bot_name, status, last_run FROM bot_runs LIMIT 10")
+        metrics = {
+            "cpu_percent": psutil.cpu_percent(),
+            "memory_percent": psutil.virtual_memory().percent,
+            "disk_percent": psutil.disk_usage("/").percent,
+        }
+        status = {
+            "nodes": [dict(node) for node in nodes],
+            "vaults": [dict(vault) for vault in vaults],
+            "tasks": [dict(task) for task in tasks],
+            "txns": [dict(txn) for txn in txns],
+            "rounds": [dict(round) for round in rounds],
+            "swarms": [dict(swarm) for swarm in swarms],
+            "accounts": [dict(account) for account in accounts],
+            "listings": [dict(listing) for listing in listings],
+            "orders": [dict(order) for order in orders],
+            "bots": [dict(bot) for bot in bots],
+            "metrics": metrics
+        }
+        await redis_client.setex(cache_key, 60, json.dumps(status))
+        logger.info("Status retrieved")
+        return status
+    except Exception as e:
+        logger.error(f"Status retrieval failed: {e}")
+        raise HTTPException(status_code=500, detail="Status retrieval failed")
+
+@app.websocket("/ws/updates")
+async def websocket_updates(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            metrics = {
+                "cpu_percent": psutil.cpu_percent(),
+                "memory_percent": psutil.virtual_memory().percent,
+                "disk_percent": psutil.disk_usage("/").percent,
+                "network_io": {
+                    "sent": psutil.net_io_counters().bytes_sent / 1024 / 1024,
+                    "received": psutil.net_io_counters().bytes_recv / 1024 / 1024
+                },
+                "timestamp": datetime.utcnow().isoformat()
+            }
+            await websocket.send_json(metrics)
+            await asyncio.sleep(5)
+    except Exception as e:
+        logger.error(f"WebSocket error: {e}")
+    finally:
+        await websocket.close()
+
+@app.websocket("/api/ws/bots/{bot_name}")
+async def websocket_bot_feed(websocket: WebSocket, bot_name: str, token: str):
+    try:
+        if not await vault_manager.validate_token(token):
+            await websocket.close(code=401)
+            raise HTTPException(status_code=401, detail="Unauthorized")
+        await websocket.accept()
+        pubsub = redis_client.pubsub()
+        pubsub.subscribe(f"nova:logs_{bot_name}")
+        try:
+            while True:
+                message = await pubsub.get_message()
+                if message and message["type"] == "message":
+                    await websocket.send_text(message["data"])
+                await asyncio.sleep(0.1)
+        finally:
+            pubsub.close()
+            await websocket.close()
+    except Exception as e:
+        logger.error("WebSocket connection failed", error=str(e))
+        raise HTTPException(status_code=500, detail=f"WebSocket error: {str(e)}")
+
+@app.get("/api/health")
+async def health():
+    return {"status": "healthy"}
+
+# Background Tasks
+async def ping_nodes():
+    try:
+        while True:
+            node_id = str(uuid.uuid4())
+            await redis_client.hset(f"node:{node_id}", mapping={
+                "cpu": str(psutil.cpu_percent()),
+                "ram": str(psutil.virtual_memory().percent),
+                "last_seen": str(time.time())
+            })
+            await redis_client.expire(f"node:{node_id}", 30)
+            await asyncio.sleep(5)
+    except Exception as e:
+        logger.error("Node ping failed", error=str(e))
+
+async def update_metrics():
+    try:
+        while True:
+            await redis_client.set('node:cpu', str(psutil.cpu_percent()))
+            await redis_client.set('node:ram', str(psutil.virtual_memory().percent))
+            await asyncio.sleep(30)
+    except Exception as e:
+        logger.error("Metrics update failed", error=str(e))
+
+if __name__ == "__main__":
+    uvicorn.run(app, host=config.HOST, port=config.PORT)

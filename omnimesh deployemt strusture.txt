@@ -1,0 +1,22 @@
+omnimesh/
+├── backend/
+│   ├── main.py
+│   ├── requirements.txt
+│   └── Dockerfile
+├── frontend/
+│   ├── src/
+│   │   ├── App.jsx
+│   │   ├── App.css
+│   │   ├── components/
+│   │   │   ├── SystemMetrics.jsx
+│   │   │   ├── QuantumEncryption.jsx
+│   │   │   ├── AIOperations.jsx
+│   │   │   ├── FederatedLearning.jsx
+│   │   │   ├── SwarmIntelligence.jsx
+│   │   │   ├── BlockchainOperations.jsx
+│   │   │   └── TaskManagement.jsx
+│   ├── package.json
+│   └── Dockerfile
+├── docker-compose.yml
+├── nginx.conf
+└── deploy.sh
