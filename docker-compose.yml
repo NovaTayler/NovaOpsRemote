@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  omnimesh:
+    build:
+      context: ./omnimesh
+    ports:
+      - "8080:8080"
+  novadash:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
