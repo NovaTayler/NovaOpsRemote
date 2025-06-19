@@ -652,6 +652,14 @@ def process_task(task_id: str, task_type: str, payload: Dict):
 
 # FastAPI App
 app = FastAPI(title="OmniMesh", version="2.1.0")
+
+# Mount the NovaDash Flask UI under /dash so both services can run
+try:
+    from fastapi.middleware.wsgi import WSGIMiddleware
+    from novadash.main import app as novadash_app
+    app.mount("/dash", WSGIMiddleware(novadash_app))
+except Exception as e:  # pragma: no cover - optional dependency
+    logger.warning(f"Failed to mount NovaDash UI: {e}")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[config.FRONTEND_URL],
