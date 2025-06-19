@@ -8,5 +8,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application source
 COPY . .
 
-# Launch the OmniMesh backend (which also mounts the NovaDash UI)
-CMD ["python", "-m", "omnimesh.backend"]
+# Launch the OmniMesh backend which exposes the API and dashboard
+CMD ["uvicorn", "omnimesh.backend:app", "--host", "0.0.0.0", "--port", "8080"]

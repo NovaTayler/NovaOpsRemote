@@ -29,11 +29,13 @@ The built application will appear in the `dist` directory.
 
 ## Docker Compose
 
-You can start both the backend and the NovaDash UI using docker-compose:
+You can start the full OmniMesh backend (which also serves the NovaDash UI) using docker-compose:
 
 ```bash
 docker-compose up --build
 ```
+
+The API will be available at `http://localhost:8080/` and the NovaDash UI under `http://localhost:8080/dash`.
 
 Or simply run the helper script:
 
