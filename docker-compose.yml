@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  omnimesh:
+    build: .
+    command: uvicorn omnimesh.backend:app --host 0.0.0.0 --port 8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./novadash/command_log.txt:/app/novadash/command_log.txt
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ADMIN_PASSWORD=secure_omnimesh_pass_2025
+      - FRONTEND_URL=http://localhost:3000
