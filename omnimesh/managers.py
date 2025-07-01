@@ -9,13 +9,40 @@ import asyncio
 import numpy as np
 from typing import Dict, List, Any
 from pathlib import Path
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
-from web3 import Web3, HTTPProvider
 from fastapi import HTTPException, BackgroundTasks
-from pqcrypto.kem.kyber512 import generate_keypair as kyber_generate_keypair, encrypt as kyber_encrypt, decrypt as kyber_decrypt
+
+# Conditional imports for dependencies
+try:
+    import torch
+    import torch.nn as nn
+    import torch.optim as optim
+    from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
+    TORCH_AVAILABLE = True
+    TRANSFORMERS_AVAILABLE = True
+except ImportError:
+    TORCH_AVAILABLE = False
+    TRANSFORMERS_AVAILABLE = False
+    # Create mock classes for torch
+    class nn:
+        class Module:
+            def __init__(self):
+                pass
+            def to(self, device):
+                return self
+            def forward(self, x):
+                return x
+
+try:
+    from web3 import Web3, HTTPProvider
+    WEB3_AVAILABLE = True
+except ImportError:
+    WEB3_AVAILABLE = False
+    
+try:
+    from pqcrypto.kem.kyber512 import generate_keypair as kyber_generate_keypair, encrypt as kyber_encrypt, decrypt as kyber_decrypt
+    KYBER_AVAILABLE = True
+except ImportError:
+    KYBER_AVAILABLE = False
 
 from ..common.config import config
 from ..common.logging import get_logger
@@ -27,15 +54,31 @@ class QuantumCrypto:
     """Quantum-resistant encryption using Kyber"""
     
     def generate_keypair(self) -> tuple[bytes, bytes]:
+        if not KYBER_AVAILABLE:
+            # Mock implementation
+            public_key = os.urandom(32)
+            private_key = os.urandom(32)
+            return public_key, private_key
+        
         public_key, private_key = kyber_generate_keypair()
         return public_key, private_key
 
     def encrypt(self, message: bytes, public_key: bytes) -> bytes:
+        if not KYBER_AVAILABLE:
+            # Mock encryption - just return message with some padding
+            return b"mock_encrypted_" + message
+        
         ciphertext, _ = kyber_encrypt(public_key, message)
         return ciphertext
 
     def decrypt(self, ciphertext: bytes, private_key: bytes) -> bytes:
         try:
+            if not KYBER_AVAILABLE:
+                # Mock decryption - remove mock prefix
+                if ciphertext.startswith(b"mock_encrypted_"):
+                    return ciphertext[15:]  # Remove "mock_encrypted_" prefix
+                return ciphertext
+            
             plaintext = kyber_decrypt(private_key, ciphertext)
             return plaintext
         except Exception as e:
@@ -52,20 +95,26 @@ class AIModelManager:
         self.device = device
         self.pipelines = {}
         self.custom_models = {}
-        self._initialize_models()
+        if TRANSFORMERS_AVAILABLE:
+            self._initialize_models()
+        else:
+            logger.warning("Transformers not available, using mock AI implementations")
 
     def _initialize_models(self):
         try:
+            if not TRANSFORMERS_AVAILABLE:
+                return
+                
             self.pipelines["text_generation"] = pipeline(
                 "text-generation",
                 model=AutoModelForCausalLM.from_pretrained("gpt2-medium"),
                 tokenizer=AutoTokenizer.from_pretrained("gpt2-medium"),
-                device=0 if self.device == "cuda" else -1
+                device=0 if self.device == "cuda" and TORCH_AVAILABLE else -1
             )
-            self.pipelines["sentiment"] = pipeline("sentiment-analysis", device=0 if self.device == "cuda" else -1)
-            self.pipelines["qa"] = pipeline("question-answering", device=0 if self.device == "cuda" else -1)
-            self.pipelines["summarization"] = pipeline("summarization", device=0 if self.device == "cuda" else -1)
-            self.pipelines["ner"] = pipeline("ner", aggregation_strategy="simple", device=0 if self.device == "cuda" else -1)
+            self.pipelines["sentiment"] = pipeline("sentiment-analysis", device=0 if self.device == "cuda" and TORCH_AVAILABLE else -1)
+            self.pipelines["qa"] = pipeline("question-answering", device=0 if self.device == "cuda" and TORCH_AVAILABLE else -1)
+            self.pipelines["summarization"] = pipeline("summarization", device=0 if self.device == "cuda" and TORCH_AVAILABLE else -1)
+            self.pipelines["ner"] = pipeline("ner", aggregation_strategy="simple", device=0 if self.device == "cuda" and TORCH_AVAILABLE else -1)
             logger.info("AI models initialized successfully")
         except Exception as e:
             logger.error(f"Model initialization failed: {e}")
@@ -154,19 +203,23 @@ class FederatedLearningManager:
         try:
             round_id = str(uuid.uuid4())
             
-            # Create simple neural network
-            class SimpleNN(nn.Module):
-                def __init__(self):
-                    super().__init__()
-                    self.fc = nn.Linear(
-                        model_architecture.get("input_size", 100), 
-                        model_architecture.get("output_size", 10)
-                    )
+            if TORCH_AVAILABLE:
+                # Create simple neural network
+                class SimpleNN(nn.Module):
+                    def __init__(self):
+                        super().__init__()
+                        self.fc = nn.Linear(
+                            model_architecture.get("input_size", 100), 
+                            model_architecture.get("output_size", 10)
+                        )
+                    
+                    def forward(self, x):
+                        return self.fc(x)
                 
-                def forward(self, x):
-                    return self.fc(x)
-            
-            base_model = SimpleNN().to(self.device)
+                base_model = SimpleNN().to(self.device)
+            else:
+                # Mock model
+                base_model = {"type": "mock_model", "architecture": model_architecture}
             
             self.active_rounds[round_id] = {
                 "model": base_model,
@@ -318,6 +371,14 @@ class BlockchainManager:
     
     def __init__(self, rpc_url: str):
         try:
+            if not WEB3_AVAILABLE:
+                logger.warning("Web3 not available, using mock blockchain implementation")
+                self.w3 = None
+                self.contract = None
+                self.account = None
+                self.private_key = None
+                return
+                
             self.w3 = Web3(HTTPProvider(rpc_url))
             if not self.w3.is_connected():
                 logger.warning("Failed to connect to Ethereum network, using mock mode")

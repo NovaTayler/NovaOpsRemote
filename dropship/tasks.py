@@ -14,12 +14,23 @@ import email
 import re
 from typing import Dict, Optional, Tuple, List
 from tenacity import retry, stop_after_attempt
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
-from fake_useragent import UserAgent
+
+# Conditional imports
+try:
+    from selenium import webdriver
+    from selenium.webdriver.chrome.service import Service
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.chrome.options import Options
+    from webdriver_manager.chrome import ChromeDriverManager
+    SELENIUM_AVAILABLE = True
+except ImportError:
+    SELENIUM_AVAILABLE = False
+
+try:
+    from fake_useragent import UserAgent
+    FAKE_UA_AVAILABLE = True
+except ImportError:
+    FAKE_UA_AVAILABLE = False
 
 from ..common.celery_app import celery_app
 from ..common.config import config
@@ -27,12 +38,18 @@ from ..common.logging import get_logger
 from ..common.redis_client import redis_client
 
 logger = get_logger(__name__)
-ua = UserAgent()
+
+if FAKE_UA_AVAILABLE:
+    ua = UserAgent()
+else:
+    ua = None
 
 
 # Helper functions
 async def get_random_user_agent() -> str:
-    return ua.random
+    if FAKE_UA_AVAILABLE and ua:
+        return ua.random
+    return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 
 
 async def generate_email() -> str:
@@ -83,6 +100,10 @@ async def get_virtual_phone() -> str:
 
 async def human_like_typing(element, text: str):
     """Simulate human typing"""
+    if not SELENIUM_AVAILABLE:
+        # Mock implementation
+        return
+    
     for char in text:
         element.send_keys(char)
         await asyncio.sleep(random.uniform(0.05, 0.3))

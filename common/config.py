@@ -5,8 +5,14 @@ Pydantic settings loading all environment variables
 import os
 import secrets
 from typing import List
-from dataclasses import dataclass
-import torch
+from dataclasses import dataclass, field
+
+# Conditionally import torch
+try:
+    import torch
+    TORCH_AVAILABLE = True
+except ImportError:
+    TORCH_AVAILABLE = False
 
 
 @dataclass
@@ -36,7 +42,7 @@ class Config:
     
     # AI/ML settings
     MODEL_PATH: str = "./models"
-    TORCH_DEVICE: str = "cuda" if torch.cuda.is_available() else "cpu"
+    TORCH_DEVICE: str = "cuda" if TORCH_AVAILABLE and torch.cuda.is_available() else "cpu"
     
     # Blockchain settings
     ETH_RPC: str = "https://sepolia.infura.io/v3/3a9e07a6f33f4b80bf61c4e56f2c7eb6"
@@ -47,8 +53,8 @@ class Config:
     FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:3000")
     
     # Dropshipping settings
-    SUPPLIERS: List[str] = os.getenv("SUPPLIERS", "CJ Dropshipping,AliExpress").split(",")
-    PLATFORMS: List[str] = ["eBay", "Amazon", "Walmart", "Etsy", "Shopify"]
+    SUPPLIERS: List[str] = field(default_factory=lambda: os.getenv("SUPPLIERS", "CJ Dropshipping,AliExpress").split(","))
+    PLATFORMS: List[str] = field(default_factory=lambda: ["eBay", "Amazon", "Walmart", "Etsy", "Shopify"])
     MAX_LISTINGS: int = int(os.getenv("MAX_LISTINGS", 500))
     
     # Email settings
