@@ -1,1 +1,10 @@
 flask
+fastapi
+uvicorn
+asyncpg
+redis
+psutil
+structlog
+pydantic
+python-jose[cryptography]
+websockets
